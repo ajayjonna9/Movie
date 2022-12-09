@@ -9,25 +9,50 @@ function App() {
   const [moviearr, setMoviearr] = useState([]);
   const [isLoad, setisLoad] = useState(true);
   const [isError, setisError] = useState(false);
-  const [he, sethe] = useState(1);
 
   let content;
   const fetchingmovies = useCallback(async () => {
     try {
       setisLoad(false);
       setisError(false);
-      const res = await axios.get("https://swapi.py4e.com/api/films/");
+      const res = await axios.get(
+        "https://movies-eaa4d-default-rtdb.firebaseio.com/movies.json"
+      );
+      console.log(res.data);
+      const moviedata = [];
+      for (let i in res.data) {
+        let data = res.data[i];
+        data = {
+          ...data,
+          id: i,
+        };
 
-      setMoviearr(res.data.results);
+        moviedata.push(data);
+      }
+      console.log(moviedata);
 
-      console.log(res.data.results);
+      setMoviearr(moviedata);
     } catch (err) {
       setisError(true);
     }
     setisLoad(true);
   }, []);
-  if (isLoad && moviearr.length > 0) {
-    content = <MoviesList movies={moviearr} />;
+  const onDelete = async (id) => {
+    try {
+      const res = await axios.delete(
+        `https://movies-eaa4d-default-rtdb.firebaseio.com/movies/${id}.json`
+      );
+      setMoviearr((pre) => {
+        const newarr = pre.filter((item) => {
+          return item.id !== id;
+        });
+        return newarr;
+      });
+      console.log(res);
+    } catch (err) {}
+  };
+  if (isLoad) {
+    content = <MoviesList movies={moviearr} delete={onDelete} />;
   }
   if (!isLoad) {
     content = (
@@ -39,11 +64,16 @@ function App() {
   if (isError && isLoad) {
     content = "Somthing went wrong";
   }
-  const click = () => {
-    sethe(2);
-  };
+
   const addMovie = async (obj) => {
     console.log(obj);
+    const Obj = JSON.stringify(obj);
+    const res = await axios.post(
+      "https://movies-eaa4d-default-rtdb.firebaseio.com/movies.json",
+      Obj
+    );
+    console.log(res);
+    fetchingmovies();
   };
   useEffect(() => {
     fetchingmovies();
@@ -57,7 +87,6 @@ function App() {
         <button onClick={fetchingmovies}>Fetch Movies</button>
       </section>
       <section>{content}</section>
-      <button onClick={click}>hoo</button>
     </React.Fragment>
   );
 }

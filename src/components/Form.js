@@ -39,13 +39,13 @@ const Form = (props) => {
         required
       ></input>
       <h3>Opening text</h3>
-      <input
-        type="text"
+      <textarea
+        rows="5"
         name="openingtext"
         size="50"
         onChange={onChangeValues}
         required
-      ></input>
+      ></textarea>
       <h3>Release Date</h3>
       <input
         type="date"

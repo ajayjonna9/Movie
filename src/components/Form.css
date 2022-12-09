@@ -1,1 +1,12 @@
-
+form input {
+  border-radius: 5px;
+  height: 30px;
+  width: 100%;
+}
+form textarea {
+  width: 100%;
+  border-radius: 5px;
+}
+form button {
+  margin: 20px;
+}
