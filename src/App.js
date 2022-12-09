@@ -6,30 +6,19 @@ import axios from "axios";
 
 function App() {
   const [moviearr, setMoviearr] = useState([]);
+  const [isLoad, setisLoad] = useState(true);
   async function fetchingmovies() {
     try {
+      setisLoad(false);
       const res = await axios.get("https://swapi.py4e.com/api/films");
 
       setMoviearr(res.data.results);
+      setisLoad(true);
       console.log(res.data.results);
     } catch (err) {
       console.log("error", err);
     }
   }
-  const dummyMovies = [
-    {
-      id: 1,
-      title: "Some Dummy Movie",
-      openingText: "This is the opening text of the movie",
-      releaseDate: "2021-05-18",
-    },
-    {
-      id: 2,
-      title: "Some Dummy Movie 2",
-      openingText: "This is the second opening text of the movie",
-      releaseDate: "2021-05-19",
-    },
-  ];
 
   return (
     <React.Fragment>
@@ -37,7 +26,13 @@ function App() {
         <button onClick={fetchingmovies}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={moviearr} />
+        {isLoad ? (
+          <MoviesList movies={moviearr} />
+        ) : (
+          <div className="spinner">
+            <div className="loader"></div>
+          </div>
+        )}
       </section>
     </React.Fragment>
   );
