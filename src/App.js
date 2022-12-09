@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
 import axios from "axios";
+import Form from "./components/Form";
 
 function App() {
   const [moviearr, setMoviearr] = useState([]);
   const [isLoad, setisLoad] = useState(true);
   const [isError, setisError] = useState(false);
   const [he, sethe] = useState(1);
-  useEffect(() => {
-    fetchingmovies();
-  }, []);
+
   let content;
-  async function fetchingmovies() {
+  const fetchingmovies = useCallback(async () => {
     try {
       setisLoad(false);
       setisError(false);
@@ -26,7 +25,7 @@ function App() {
       setisError(true);
     }
     setisLoad(true);
-  }
+  }, []);
   if (isLoad && moviearr.length > 0) {
     content = <MoviesList movies={moviearr} />;
   }
@@ -43,8 +42,17 @@ function App() {
   const click = () => {
     sethe(2);
   };
+  const addMovie = async (obj) => {
+    console.log(obj);
+  };
+  useEffect(() => {
+    fetchingmovies();
+  }, [fetchingmovies]);
   return (
     <React.Fragment>
+      <section>
+        <Form addmovie={addMovie} />
+      </section>
       <section>
         <button onClick={fetchingmovies}>Fetch Movies</button>
       </section>
