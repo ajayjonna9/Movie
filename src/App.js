@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -8,21 +8,22 @@ function App() {
   const [moviearr, setMoviearr] = useState([]);
   const [isLoad, setisLoad] = useState(true);
   const [isError, setisError] = useState(false);
-  let errormsg = "Somthing went wrong";
+  const [he, sethe] = useState(1);
+  useEffect(() => {
+    fetchingmovies();
+  }, []);
   let content;
   async function fetchingmovies() {
     try {
       setisLoad(false);
       setisError(false);
-      const res = await axios.get("https://swapi.py4e.com/api/film");
+      const res = await axios.get("https://swapi.py4e.com/api/films/");
 
       setMoviearr(res.data.results);
 
       console.log(res.data.results);
     } catch (err) {
       setisError(true);
-
-      console.log(errormsg);
     }
     setisLoad(true);
   }
@@ -39,13 +40,16 @@ function App() {
   if (isError && isLoad) {
     content = "Somthing went wrong";
   }
-
+  const click = () => {
+    sethe(2);
+  };
   return (
     <React.Fragment>
       <section>
         <button onClick={fetchingmovies}>Fetch Movies</button>
       </section>
       <section>{content}</section>
+      <button onClick={click}>hoo</button>
     </React.Fragment>
   );
 }
